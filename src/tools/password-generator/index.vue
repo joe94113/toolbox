@@ -26,7 +26,6 @@ watch([length, lower, upper, numbers, symbols], generate, { immediate: true })
 
 <template>
   <ToolShell title="密碼產生器">
-    <p class="hint">調整條件，密碼會自動重新產生；想換一組就按「重新產生」。</p>
 
     <div class="length-row">
       <label>長度：{{ length }}</label>
@@ -58,7 +57,6 @@ watch([length, lower, upper, numbers, symbols], generate, { immediate: true })
 </template>
 
 <style scoped>
-.hint { margin: 0 0 1.1rem; color: var(--ink-soft); font-size: 0.9rem; }
 .length-row { margin-bottom: 1rem; }
 .length-row label { display: block; font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 0.35rem; }
 .length-row input[type='range'] { width: 100%; accent-color: var(--accent); }

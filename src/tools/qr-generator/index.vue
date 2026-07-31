@@ -53,9 +53,6 @@ function download() {
 
 <template>
   <ToolShell title="QR Code 產生器">
-    <p class="hint">
-      把網址、一段文字或 Wi-Fi 連線資訊變成 QR Code，產生完可以直接存成 PNG。
-    </p>
 
     <div class="tabs">
       <button type="button" class="tab" :class="{ on: mode === 'text' }" @click="mode = 'text'">
@@ -134,11 +131,6 @@ function download() {
 </template>
 
 <style scoped>
-.hint {
-  margin: 0 0 1rem;
-  color: var(--ink-soft);
-  font-size: 0.9rem;
-}
 .tabs {
   display: inline-flex;
   border: 1px solid var(--line);

@@ -109,25 +109,30 @@ const groups = computed(() => {
 
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--tag);
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.9rem;
 }
 
+/* 字級刻意拉開距離：原本 h1 之外所有字都擠在 0.72–1.02rem 的窄帶裡，
+   看起來沒有層次。標題放大、說明壓小，中間地帶清空。 */
 h1 {
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-size: clamp(2.1rem, 5vw, 3.1rem);
   font-weight: 700;
-  margin: 0 0 0.75rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.8rem;
   color: var(--ink);
 }
 
 .lede {
   color: var(--ink-soft);
-  margin: 0;
-  font-size: 1rem;
+  margin: 0 auto;
+  max-width: 30rem;
+  font-size: 0.92rem;
 }
 
 .search {
@@ -145,7 +150,6 @@ h1 {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 999px;
-  text-align: center;
   transition: box-shadow 0.12s ease;
 }
 
@@ -210,26 +214,29 @@ h1 {
   gap: 1.5rem 1.25rem;
 }
 
+/* 左對齊而不是置中：置中的內文是最強的「模板感」訊號，
+   而且一整面置中卡片掃視起來比左對齊慢。標題與說明的起點對齊，
+   眼睛只要沿著同一條垂直線往下掃就好。 */
 .hook {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.35rem;
-  padding: 1.5rem 1.1rem 1.4rem;
+  align-items: flex-start;
+  gap: 0.3rem;
+  padding: 1.3rem 1.2rem 1.35rem;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 6px;
   text-decoration: none;
   color: var(--ink);
   box-shadow: 0 1px 0 var(--line);
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
 }
 
 .hook:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 16px -6px rgba(34, 38, 31, 0.25);
+  transform: translateY(-2px);
+  border-color: var(--ink);
+  box-shadow: 0 6px 14px -8px rgba(34, 38, 31, 0.35);
 }
 
 /* 原本是一顆空的小圓點，看起來像沒載入的圖示；
@@ -241,7 +248,7 @@ h1 {
   justify-content: center;
   width: 34px;
   height: 34px;
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.6rem;
   border-radius: 50%;
   background: var(--pegboard);
   border: 1px solid var(--line);
@@ -262,7 +269,8 @@ h1 {
 .label {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.02rem;
+  font-size: 1rem;
+  line-height: 1.3;
 }
 
 .desc {

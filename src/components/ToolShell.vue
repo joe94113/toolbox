@@ -35,8 +35,10 @@ defineProps({
 
 h1 {
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: clamp(1.7rem, 3.5vw, 2.1rem);
   font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   margin: 0 0 1.5rem;
 }
 

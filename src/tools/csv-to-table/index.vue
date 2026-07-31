@@ -9,7 +9,7 @@ const result = computed(() => parseCsv(input.value))
 
 <template>
   <ToolShell title="CSV 轉表格">
-    <p class="hint">貼上 CSV 內容，第一列當標題，馬上排成表格。</p>
+    <p class="hint">第一列會被當成標題。</p>
 
     <textarea v-model="input" rows="6" class="area" placeholder="在這裡貼上 CSV…"></textarea>
 

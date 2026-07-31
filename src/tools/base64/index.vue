@@ -24,7 +24,6 @@ function switchDirection(next) {
 
 <template>
   <ToolShell title="Base64 編碼 / 解碼">
-    <p class="hint">貼上文字或 Base64 內容，兩種格式互轉，中文也沒問題。</p>
 
     <div class="tabs">
       <button
@@ -67,11 +66,6 @@ function switchDirection(next) {
 </template>
 
 <style scoped>
-.hint {
-  margin: 0 0 1rem;
-  color: var(--ink-soft);
-  font-size: 0.9rem;
-}
 .tabs {
   display: inline-flex;
   border: 1px solid var(--line);

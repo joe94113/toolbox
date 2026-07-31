@@ -25,7 +25,7 @@ function useNow() {
 
 <template>
   <ToolShell title="時間戳轉換器">
-    <p class="hint">Unix 時間戳跟日期時間互換，秒或毫秒都能貼。</p>
+    <p class="hint">秒或毫秒都能貼，會自動判斷。</p>
 
     <div class="tabs">
       <button type="button" :class="{ active: direction === 'toDate' }" @click="direction = 'toDate'">

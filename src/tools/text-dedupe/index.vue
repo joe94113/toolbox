@@ -29,9 +29,7 @@ const counts = computed(() =>
 
 <template>
   <ToolShell title="文字整理">
-    <p class="hint">
-      一行一筆，貼進來就能去重複、排序、清掉空行。整理清單或日誌時很省事。
-    </p>
+    <p class="hint">一行當作一筆資料。</p>
 
     <textarea
       v-model="input"
