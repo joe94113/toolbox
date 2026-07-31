@@ -10,7 +10,6 @@ const result = computed(() => toSlug(input.value))
 
 <template>
   <ToolShell title="Slug 產生器">
-    <p class="hint">打上標題，馬上拿到能放進網址的格式。</p>
 
     <input v-model="input" type="text" class="field" placeholder="例如：今天天氣真好！" />
 
@@ -26,7 +25,6 @@ const result = computed(() => toSlug(input.value))
 </template>
 
 <style scoped>
-.hint { margin: 0 0 1rem; color: var(--ink-soft); font-size: 0.9rem; }
 .field {
   width: 100%;
   box-sizing: border-box;

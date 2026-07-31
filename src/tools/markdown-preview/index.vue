@@ -9,7 +9,6 @@ const result = computed(() => renderMarkdown(input.value))
 
 <template>
   <ToolShell title="Markdown 即時預覽">
-    <p class="hint">左邊寫 Markdown，右邊即時看到排版後的樣子。</p>
 
     <div class="columns">
       <textarea v-model="input" rows="14" class="area" placeholder="在這裡寫 Markdown…"></textarea>
@@ -19,7 +18,6 @@ const result = computed(() => renderMarkdown(input.value))
 </template>
 
 <style scoped>
-.hint { margin: 0 0 1rem; color: var(--ink-soft); font-size: 0.9rem; }
 .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
 .area {
   width: 100%; box-sizing: border-box; font-family: var(--font-mono); font-size: 0.85rem;

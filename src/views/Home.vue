@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { tools } from '../router/index.js'
+import { tools, CATEGORY_ORDER, FALLBACK_CATEGORY } from '../router/index.js'
 import VisitorBadge from '../components/VisitorBadge.vue'
 
 // 工具數量會一直長，純靠眼睛掃很累，所以給一個即時篩選。
@@ -10,8 +10,22 @@ const shown = computed(() => {
   const keyword = query.value.trim().toLowerCase()
   if (!keyword) return tools
   return tools.filter((t) =>
-    `${t.name} ${t.description}`.toLowerCase().includes(keyword)
+    `${t.name} ${t.description} ${t.category}`.toLowerCase().includes(keyword)
   )
+})
+
+// 依 CATEGORY_ORDER 分組；搜尋時整組沒東西就不顯示標題，
+// 才不會留下一排空標題。
+const groups = computed(() => {
+  const order = [...CATEGORY_ORDER, FALLBACK_CATEGORY]
+  const buckets = new Map(order.map((name) => [name, []]))
+  for (const tool of shown.value) {
+    if (!buckets.has(tool.category)) buckets.set(tool.category, [])
+    buckets.get(tool.category).push(tool)
+  }
+  return order
+    .map((name) => ({ name, items: buckets.get(name) || [] }))
+    .filter((group) => group.items.length > 0)
 })
 </script>
 
@@ -37,29 +51,36 @@ const shown = computed(() => {
       />
     </div>
 
-    <div class="grid">
-      <router-link
-        v-for="t in shown"
-        :key="t.id"
-        :to="t.path"
-        class="hook"
-      >
-        <!-- icon 是我們自己寫在 meta.js 裡的靜態 SVG 路徑，沒有使用者輸入，v-html 是安全的 -->
-        <span class="peg" aria-hidden="true">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.6"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            v-html="t.icon"
-          ></svg>
-        </span>
-        <span class="label">{{ t.name }}</span>
-        <span class="desc">{{ t.description }}</span>
-      </router-link>
-    </div>
+    <section v-for="group in groups" :key="group.name" class="group">
+      <h2 class="group-title">
+        <span>{{ group.name }}</span>
+        <span class="group-count">{{ group.items.length }}</span>
+      </h2>
+
+      <div class="grid">
+        <router-link
+          v-for="t in group.items"
+          :key="t.id"
+          :to="t.path"
+          class="hook"
+        >
+          <!-- icon 是我們自己寫在 meta.js 裡的靜態 SVG 路徑，沒有使用者輸入，v-html 是安全的 -->
+          <span class="peg" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              v-html="t.icon"
+            ></svg>
+          </span>
+          <span class="label">{{ t.name }}</span>
+          <span class="desc">{{ t.description }}</span>
+        </router-link>
+      </div>
+    </section>
 
     <p v-if="!shown.length" class="nothing">
       沒有符合「{{ query }}」的工具，換個關鍵字試試。
@@ -88,25 +109,30 @@ const shown = computed(() => {
 
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--tag);
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.9rem;
 }
 
+/* 字級刻意拉開距離：原本 h1 之外所有字都擠在 0.72–1.02rem 的窄帶裡，
+   看起來沒有層次。標題放大、說明壓小，中間地帶清空。 */
 h1 {
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-size: clamp(2.1rem, 5vw, 3.1rem);
   font-weight: 700;
-  margin: 0 0 0.75rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.8rem;
   color: var(--ink);
 }
 
 .lede {
   color: var(--ink-soft);
-  margin: 0;
-  font-size: 1rem;
+  margin: 0 auto;
+  max-width: 30rem;
+  font-size: 0.92rem;
 }
 
 .search {
@@ -124,7 +150,6 @@ h1 {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 999px;
-  text-align: center;
   transition: box-shadow 0.12s ease;
 }
 
@@ -146,6 +171,41 @@ h1 {
   font-size: 0.9rem;
 }
 
+.group {
+  max-width: 880px;
+  margin: 0 auto 2.5rem;
+}
+
+/* 分類標題用一條細線往右延伸，像洞洞板上貼的標籤，
+   不搶卡片的注意力，但掃視時能當作分段的錨點 */
+.group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+}
+
+.group-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  opacity: 0.5;
+}
+
+.group-count {
+  font-size: 0.7rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
 .grid {
   max-width: 880px;
   margin: 0 auto;
@@ -154,26 +214,29 @@ h1 {
   gap: 1.5rem 1.25rem;
 }
 
+/* 左對齊而不是置中：置中的內文是最強的「模板感」訊號，
+   而且一整面置中卡片掃視起來比左對齊慢。標題與說明的起點對齊，
+   眼睛只要沿著同一條垂直線往下掃就好。 */
 .hook {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.35rem;
-  padding: 1.5rem 1.1rem 1.4rem;
+  align-items: flex-start;
+  gap: 0.3rem;
+  padding: 1.3rem 1.2rem 1.35rem;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 6px;
   text-decoration: none;
   color: var(--ink);
   box-shadow: 0 1px 0 var(--line);
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
 }
 
 .hook:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 16px -6px rgba(34, 38, 31, 0.25);
+  transform: translateY(-2px);
+  border-color: var(--ink);
+  box-shadow: 0 6px 14px -8px rgba(34, 38, 31, 0.35);
 }
 
 /* 原本是一顆空的小圓點，看起來像沒載入的圖示；
@@ -185,7 +248,7 @@ h1 {
   justify-content: center;
   width: 34px;
   height: 34px;
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.6rem;
   border-radius: 50%;
   background: var(--pegboard);
   border: 1px solid var(--line);
@@ -206,7 +269,8 @@ h1 {
 .label {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.02rem;
+  font-size: 1rem;
+  line-height: 1.3;
 }
 
 .desc {

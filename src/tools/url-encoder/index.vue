@@ -22,7 +22,6 @@ function switchDirection(next) {
 
 <template>
   <ToolShell title="URL 編碼 / 解碼">
-    <p class="hint">貼上網址參數或一般文字，兩種格式互轉。</p>
 
     <div class="tabs">
       <button type="button" :class="{ active: direction === 'encode' }" @click="switchDirection('encode')">
@@ -55,7 +54,6 @@ function switchDirection(next) {
 </template>
 
 <style scoped>
-.hint { margin: 0 0 1rem; color: var(--ink-soft); font-size: 0.9rem; }
 .tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1rem; }
 .tabs button { padding: 0.5rem 0.9rem; border: none; background: var(--panel); color: var(--ink-soft); font-size: 0.85rem; cursor: pointer; }
 .tabs button + button { border-left: 1px solid var(--line); }

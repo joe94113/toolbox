@@ -22,7 +22,7 @@ function formatMoney(n) {
 
 <template>
   <ToolShell title="貸款試算機">
-    <p class="hint">輸入本金、年利率、還款年數，算出每月要繳多少（本息平均攤還）。</p>
+    <p class="hint">用本息平均攤還計算。</p>
 
     <div class="field-row">
       <label>本金</label>

@@ -32,7 +32,6 @@ function swap() {
 
 <template>
   <ToolShell title="單位轉換器">
-    <p class="hint">選分類、選單位，數字馬上換算。</p>
 
     <div class="tabs">
       <button
@@ -69,7 +68,6 @@ function swap() {
 </template>
 
 <style scoped>
-.hint { margin: 0 0 1rem; color: var(--ink-soft); font-size: 0.9rem; }
 .tabs { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.25rem; }
 .tabs button { padding: 0.5rem 0.85rem; border: none; background: var(--panel); color: var(--ink-soft); font-size: 0.85rem; cursor: pointer; }
 .tabs button + button { border-left: 1px solid var(--line); }

@@ -17,7 +17,6 @@ const items = computed(() => [
 
 <template>
   <ToolShell title="字數統計">
-    <p class="hint">貼上或直接打字，數字即時更新。</p>
 
     <textarea v-model="input" rows="8" class="area" placeholder="在這裡打字或貼上內容…"></textarea>
 
@@ -31,7 +30,6 @@ const items = computed(() => [
 </template>
 
 <style scoped>
-.hint { margin: 0 0 1rem; color: var(--ink-soft); font-size: 0.9rem; }
 .area {
   width: 100%;
   box-sizing: border-box;

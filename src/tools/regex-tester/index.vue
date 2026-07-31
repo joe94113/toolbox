@@ -12,7 +12,6 @@ const result = computed(() => testRegex(pattern.value, flags.value, text.value))
 
 <template>
   <ToolShell title="正規表達式測試器">
-    <p class="hint">貼上 pattern 跟要測試的文字，符合的地方會即時標出來。</p>
 
     <div class="pattern-row">
       <span class="slash">/</span>
@@ -41,7 +40,6 @@ const result = computed(() => testRegex(pattern.value, flags.value, text.value))
 </template>
 
 <style scoped>
-.hint { margin: 0 0 1rem; color: var(--ink-soft); font-size: 0.9rem; }
 .pattern-row { display: flex; align-items: center; gap: 0.3rem; margin-bottom: 0.8rem; }
 .slash { font-family: var(--font-mono); color: var(--ink-soft); }
 .pattern-field { flex: 1; font-family: var(--font-mono); font-size: 0.9rem; padding: 0.6rem 0.7rem; border: 1px solid var(--line); border-radius: 6px; background: var(--pegboard); }

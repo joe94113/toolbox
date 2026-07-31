@@ -12,7 +12,6 @@ const result = computed(() => formatJson(input.value, compact.value ? 0 : 2))
 
 <template>
   <ToolShell title="JSON 格式整理">
-    <p class="hint">貼上你的 JSON，馬上排版整齊，或壓成一行方便貼到別的地方。</p>
 
     <textarea
       v-model="input"
@@ -46,11 +45,6 @@ const result = computed(() => formatJson(input.value, compact.value ? 0 : 2))
 </template>
 
 <style scoped>
-.hint {
-  margin: 0 0 1rem;
-  color: var(--ink-soft);
-  font-size: 0.9rem;
-}
 .area {
   width: 100%;
   box-sizing: border-box;

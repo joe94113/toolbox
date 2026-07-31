@@ -19,7 +19,7 @@ watch(
 
 <template>
   <ToolShell title="Hash 計算">
-    <p class="hint">貼上文字，算出對應的雜湊值，常用來核對檔案或密碼有沒有被改動過。</p>
+    <p class="hint">同樣的輸入一定得到同樣的雜湊值，反過來推不回原文。</p>
 
     <div class="tabs">
       <button

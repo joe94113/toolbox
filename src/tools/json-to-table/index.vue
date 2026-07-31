@@ -9,7 +9,6 @@ const result = computed(() => jsonToTable(input.value))
 
 <template>
   <ToolShell title="JSON 轉表格">
-    <p class="hint">貼一個 JSON 陣列，比純文字更好讀。</p>
 
     <textarea v-model="input" rows="6" class="area" placeholder="在這裡貼上 JSON 陣列…"></textarea>
 
@@ -40,7 +39,6 @@ const result = computed(() => jsonToTable(input.value))
 </template>
 
 <style scoped>
-.hint { margin: 0 0 1rem; color: var(--ink-soft); font-size: 0.9rem; }
 .area { width: 100%; box-sizing: border-box; font-family: var(--font-mono); font-size: 0.85rem; padding: 0.9rem; border: 1px solid var(--line); border-radius: 6px; background: var(--pegboard); resize: vertical; margin-bottom: 1.1rem; }
 .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
 table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }

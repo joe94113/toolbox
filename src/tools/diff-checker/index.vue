@@ -12,7 +12,6 @@ const result = computed(() => compareText(oldText.value, newText.value, mode.val
 
 <template>
   <ToolShell title="Diff 文字比對">
-    <p class="hint">左邊放原文、右邊放修改後的版本，不一樣的地方會標出來。</p>
 
     <div class="tabs">
       <button type="button" :class="{ active: mode === 'lines' }" @click="mode = 'lines'">逐行比對</button>
@@ -39,7 +38,6 @@ const result = computed(() => compareText(oldText.value, newText.value, mode.val
 </template>
 
 <style scoped>
-.hint { margin: 0 0 1rem; color: var(--ink-soft); font-size: 0.9rem; }
 .tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1rem; }
 .tabs button { padding: 0.5rem 0.9rem; border: none; background: var(--panel); color: var(--ink-soft); font-size: 0.85rem; cursor: pointer; }
 .tabs button + button { border-left: 1px solid var(--line); }

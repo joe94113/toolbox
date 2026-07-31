@@ -3,7 +3,8 @@
 // 例如：node scripts/new-tool.js uuid-generator "UUID 產生器" "產生一組 v4 UUID"
 //
 // 會建立四個檔案：
-//   meta.js        名稱與描述（顯示在首頁卡片上）
+//   meta.js        名稱、描述、分類與圖示（顯示在首頁卡片上）
+//                  圖示先給一個佔位圓圈，記得換成這個工具自己的 SVG path
 //   logic.js        純運算邏輯，不碰 Vue／DOM，方便測試
 //   logic.test.js    邏輯的測試（先把這個補完、跑綠燈，再動畫面）
 //   index.vue        畫面，套用共用的 ToolShell + CopyButton
@@ -15,10 +16,12 @@ import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const [, , id, name, description] = process.argv
+const [, , id, name, description, category] = process.argv
 
 if (!id || !name) {
-  console.error('用法: node scripts/new-tool.js <id> "<名稱>" "<描述>"')
+  console.error('用法: node scripts/new-tool.js <id> "<名稱>" "<描述>" "<分類>"')
+  console.error('分類可選：編碼與雜湊 / 文字處理 / 資料格式 / 開發輔助 / 時間與排程 / 換算與計算')
+  console.error('沒填的話會歸到「其他」，之後補進 meta.js 就好')
   process.exit(1)
 }
 
@@ -32,7 +35,7 @@ mkdirSync(toolDir, { recursive: true })
 
 writeFileSync(
   join(toolDir, 'meta.js'),
-  `export default {\n  name: '${name}',\n  description: '${description || ''}',\n}\n`
+  `export default {\n  name: '${name}',\n  description: '${description || ''}',\n  category: '${category || '其他'}',\n  icon: '<circle cx="12" cy="12" r="7"/>',\n}\n`
 )
 
 writeFileSync(
