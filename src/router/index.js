@@ -6,12 +6,25 @@ import Home from '../views/Home.vue'
 const toolComponents = import.meta.glob('../tools/*/index.vue')
 const toolMetas = import.meta.glob('../tools/*/meta.js', { eager: true })
 
+// 首頁分組的顯示順序。meta.js 裡沒寫 category 的工具會被歸到「其他」，
+// 排在最後面，這樣忘記填也不會整個消失。
+export const CATEGORY_ORDER = [
+  '編碼與雜湊',
+  '文字處理',
+  '資料格式',
+  '開發輔助',
+  '時間與排程',
+  '換算與計算',
+]
+export const FALLBACK_CATEGORY = '其他'
+
 export const tools = Object.keys(toolMetas).map((path) => {
   const id = path.split('/')[2] // ../tools/<id>/meta.js
   const meta = toolMetas[path].default
   return {
     ...meta,
     id,
+    category: meta.category || FALLBACK_CATEGORY,
     path: `/tools/${id}`,
     component: toolComponents[`../tools/${id}/index.vue`],
   }

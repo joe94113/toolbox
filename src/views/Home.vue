@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { tools } from '../router/index.js'
+import { tools, CATEGORY_ORDER, FALLBACK_CATEGORY } from '../router/index.js'
 import VisitorBadge from '../components/VisitorBadge.vue'
 
 // 工具數量會一直長，純靠眼睛掃很累，所以給一個即時篩選。
@@ -10,8 +10,22 @@ const shown = computed(() => {
   const keyword = query.value.trim().toLowerCase()
   if (!keyword) return tools
   return tools.filter((t) =>
-    `${t.name} ${t.description}`.toLowerCase().includes(keyword)
+    `${t.name} ${t.description} ${t.category}`.toLowerCase().includes(keyword)
   )
+})
+
+// 依 CATEGORY_ORDER 分組；搜尋時整組沒東西就不顯示標題，
+// 才不會留下一排空標題。
+const groups = computed(() => {
+  const order = [...CATEGORY_ORDER, FALLBACK_CATEGORY]
+  const buckets = new Map(order.map((name) => [name, []]))
+  for (const tool of shown.value) {
+    if (!buckets.has(tool.category)) buckets.set(tool.category, [])
+    buckets.get(tool.category).push(tool)
+  }
+  return order
+    .map((name) => ({ name, items: buckets.get(name) || [] }))
+    .filter((group) => group.items.length > 0)
 })
 </script>
 
@@ -37,29 +51,36 @@ const shown = computed(() => {
       />
     </div>
 
-    <div class="grid">
-      <router-link
-        v-for="t in shown"
-        :key="t.id"
-        :to="t.path"
-        class="hook"
-      >
-        <!-- icon 是我們自己寫在 meta.js 裡的靜態 SVG 路徑，沒有使用者輸入，v-html 是安全的 -->
-        <span class="peg" aria-hidden="true">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.6"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            v-html="t.icon"
-          ></svg>
-        </span>
-        <span class="label">{{ t.name }}</span>
-        <span class="desc">{{ t.description }}</span>
-      </router-link>
-    </div>
+    <section v-for="group in groups" :key="group.name" class="group">
+      <h2 class="group-title">
+        <span>{{ group.name }}</span>
+        <span class="group-count">{{ group.items.length }}</span>
+      </h2>
+
+      <div class="grid">
+        <router-link
+          v-for="t in group.items"
+          :key="t.id"
+          :to="t.path"
+          class="hook"
+        >
+          <!-- icon 是我們自己寫在 meta.js 裡的靜態 SVG 路徑，沒有使用者輸入，v-html 是安全的 -->
+          <span class="peg" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              v-html="t.icon"
+            ></svg>
+          </span>
+          <span class="label">{{ t.name }}</span>
+          <span class="desc">{{ t.description }}</span>
+        </router-link>
+      </div>
+    </section>
 
     <p v-if="!shown.length" class="nothing">
       沒有符合「{{ query }}」的工具，換個關鍵字試試。
@@ -144,6 +165,41 @@ h1 {
   text-align: center;
   color: var(--ink-soft);
   font-size: 0.9rem;
+}
+
+.group {
+  max-width: 880px;
+  margin: 0 auto 2.5rem;
+}
+
+/* 分類標題用一條細線往右延伸，像洞洞板上貼的標籤，
+   不搶卡片的注意力，但掃視時能當作分段的錨點 */
+.group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+}
+
+.group-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  opacity: 0.5;
+}
+
+.group-count {
+  font-size: 0.7rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: var(--panel);
+  border: 1px solid var(--line);
 }
 
 .grid {
