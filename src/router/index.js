@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
+import { recordVisit } from '../lib/recent.js'
 
 // 自動掃描每個工具資料夾的 index.vue 與 meta.js
 // 之後新增工具只要新增資料夾，不用手動改路由設定
@@ -61,6 +62,12 @@ const router = createRouter({
 // 換頁時同步更新 <title> 跟 meta description，
 // 這樣搜尋引擎跟社群分享看到的每一頁才會是正確的標題跟說明，不會全部都一樣。
 router.afterEach((to) => {
+  // 進到工具頁就記一筆，首頁才能把常用的幾個釘在最上面。
+  // 只記工具 id，沒有記任何使用者輸入的內容。
+  if (to.path.startsWith('/tools/') && to.name) {
+    recordVisit(String(to.name))
+  }
+
   document.title = to.meta.title ? `${to.meta.title}｜${SITE_TITLE}` : `${SITE_TITLE}｜貼上內容，立刻拿到你要的結果`
 
   const description = to.meta.description || DEFAULT_DESCRIPTION
