@@ -1,6 +1,18 @@
 <script setup>
+import { ref, computed } from 'vue'
 import { tools } from '../router/index.js'
 import VisitorBadge from '../components/VisitorBadge.vue'
+
+// 工具數量會一直長，純靠眼睛掃很累，所以給一個即時篩選。
+// 名稱跟說明都比對，這樣打「顏色」也能找到「色碼轉換器」。
+const query = ref('')
+const shown = computed(() => {
+  const keyword = query.value.trim().toLowerCase()
+  if (!keyword) return tools
+  return tools.filter((t) =>
+    `${t.name} ${t.description}`.toLowerCase().includes(keyword)
+  )
+})
 </script>
 
 <template>
@@ -8,24 +20,50 @@ import VisitorBadge from '../components/VisitorBadge.vue'
     <header class="intro">
       <p class="eyebrow">工具箱</p>
       <h1>需要什麼，就拿去用</h1>
+      <!-- 這句刻意寫「貼上的內容」而不是「什麼都不送」：頁尾的計數器仍會送出一次瀏覽紀錄，
+           講「貼上的內容」才不會講過頭。之後要改文案請維持這個範圍。 -->
       <p class="lede">
-        貼上內容，立刻拿到你要的結果。每個工具的運算都留在你的瀏覽器裡，
-        不會被送到任何地方——只有下面這個造訪次數，會送去計數服務登記一下。
+        每個工具的運算都留在你的瀏覽器裡，貼上的內容不會被送到任何地方。
       </p>
     </header>
 
+    <div class="search">
+      <input
+        v-model="query"
+        type="search"
+        class="search-field"
+        placeholder="找工具…例如 JSON、顏色、時間"
+        aria-label="搜尋工具"
+      />
+    </div>
+
     <div class="grid">
       <router-link
-        v-for="t in tools"
+        v-for="t in shown"
         :key="t.id"
         :to="t.path"
         class="hook"
       >
-        <span class="peg" aria-hidden="true"></span>
+        <!-- icon 是我們自己寫在 meta.js 裡的靜態 SVG 路徑，沒有使用者輸入，v-html 是安全的 -->
+        <span class="peg" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            v-html="t.icon"
+          ></svg>
+        </span>
         <span class="label">{{ t.name }}</span>
         <span class="desc">{{ t.description }}</span>
       </router-link>
     </div>
+
+    <p v-if="!shown.length" class="nothing">
+      沒有符合「{{ query }}」的工具，換個關鍵字試試。
+    </p>
 
     <footer class="foot">
       <VisitorBadge />
@@ -71,6 +109,43 @@ h1 {
   font-size: 1rem;
 }
 
+.search {
+  max-width: 380px;
+  margin: 0 auto 2rem;
+}
+
+.search-field {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  text-align: center;
+  transition: box-shadow 0.12s ease;
+}
+
+.search-field::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.7;
+}
+
+.search-field:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(140, 125, 92, 0.3);
+}
+
+.nothing {
+  max-width: 880px;
+  margin: 2rem auto 0;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
 .grid {
   max-width: 880px;
   margin: 0 auto;
@@ -86,7 +161,7 @@ h1 {
   align-items: center;
   text-align: center;
   gap: 0.35rem;
-  padding: 2.25rem 1.1rem 1.4rem;
+  padding: 1.5rem 1.1rem 1.4rem;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -101,15 +176,31 @@ h1 {
   box-shadow: 0 8px 16px -6px rgba(34, 38, 31, 0.25);
 }
 
+/* 原本是一顆空的小圓點，看起來像沒載入的圖示；
+   改成放工具圖示的圓形底座，洞洞板的感覺留著，但每張卡片終於長得不一樣了。
+   同時不再用 absolute 定位，卡片頂端就不用留一大塊空白。 */
 .peg {
-  position: absolute;
-  top: 0.75rem;
-  width: 14px;
-  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 0.45rem;
   border-radius: 50%;
   background: var(--pegboard);
   border: 1px solid var(--line);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+  color: var(--ink-soft);
+  transition: color 0.12s ease;
+}
+
+.peg svg {
+  width: 18px;
+  height: 18px;
+}
+
+.hook:hover .peg {
+  color: var(--tag);
 }
 
 .label {
@@ -122,6 +213,9 @@ h1 {
   font-size: 0.82rem;
   color: var(--ink-soft);
   line-height: 1.5;
+  /* 中文描述常常最後一行只剩一個字（「…每月要繳多／少」），看起來像壞掉。
+     pretty 會幫忙把斷行往前挪，讓最後一行不落單；不支援的瀏覽器就維持原樣。 */
+  text-wrap: pretty;
 }
 
 .foot {
