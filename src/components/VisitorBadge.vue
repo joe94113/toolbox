@@ -1,20 +1,14 @@
 <script setup>
-import { computed } from 'vue'
-
-// 用目前頁面的網址當作計數器的識別碼，
-// 部署到 GitHub Pages 後不用手動填自己的網址，瀏覽器會自己算出來。
-const badgeSrc = computed(() => {
-  const pageUrl = window.location.origin + window.location.pathname
-  const params = new URLSearchParams({
-    url: pageUrl,
-    title: '', // 不顯示標題文字，只留數字，畫面上更小一塊
-    count_bg: '#8C7D5C',
-    title_bg: '#8C7D5C',
-    icon_color: '#FBFAF6',
-    edge_flat: 'true',
-  })
-  return `https://hits.seeyoufarm.com/api/count/incr/badge.svg?${params.toString()}`
+// 計數服務用 komarev（seeyoufarm 的 API 已停擺，改用這個）。
+// 它用一個固定字串當識別碼，所以這裡寫死一個專屬 key；label 留空只顯示數字，
+// 畫面上就是一小塊數字膠囊，跟旁邊的「造訪次數」小標搭配。
+const params = new URLSearchParams({
+  username: 'joe94113-toolbox',
+  label: '', // 不顯示標題文字，只留數字
+  style: 'flat',
+  color: '8C7D5C',
 })
+const badgeSrc = `https://komarev.com/ghpvc/?${params.toString()}`
 </script>
 
 <template>
