@@ -19,6 +19,15 @@ describe('parseCron', () => {
     expect(result.ok).toBe(false)
   })
 
+  it('錯誤訊息不會出現 undefined', () => {
+    // cronstrue 丟的是字串不是 Error，讀 e.message 會拿到 undefined
+    for (const bad of ['not a cron', '* * *', '0 99 * * *']) {
+      const result = parseCron(bad)
+      expect(result.ok, bad).toBe(false)
+      expect(result.error, bad).not.toContain('undefined')
+    }
+  })
+
   it('空字串視為空輸出', () => {
     expect(parseCron('')).toEqual({ ok: true, value: null })
   })
