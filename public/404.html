@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <title>工具箱</title>
+    <script>
+      // GitHub Pages 沒有 server-side rewrite，直接連到 /tools/xxx 這種子網址
+      // 或重新整理時，GitHub Pages 找不到對應檔案就會顯示這個 404 頁面。
+      // 這段腳本把整個路徑編碼塞進查詢字串，導回 index.html，
+      // index.html 裡對應的腳本再把網址還原回真正的路徑。
+      // 技巧出處：https://github.com/rafgraph/spa-github-pages
+      //
+      // pathSegmentsToKeep：要保留幾段路徑當作「網站根目錄」。
+      // 一般 repo（例如 username.github.io/toolbox/）要設 1；
+      // 如果這個 repo 本身就叫 <你的帳號>.github.io（部署在網域根目錄），要改成 0。
+      var pathSegmentsToKeep = 1
+
+      var l = window.location
+      l.replace(
+        l.protocol +
+          '//' +
+          l.hostname +
+          (l.port ? ':' + l.port : '') +
+          l.pathname
+            .split('/')
+            .slice(0, 1 + pathSegmentsToKeep)
+            .join('/') +
+          '/?/' +
+          l.pathname
+            .slice(1)
+            .split('/')
+            .slice(pathSegmentsToKeep)
+            .join('/')
+            .replace(/&/g, '~and~') +
+          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+          l.hash
+      )
+    </script>
+  </head>
+  <body></body>
+</html>
